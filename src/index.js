@@ -2,23 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import toast, { Toaster } from 'react-hot-toast';
 import reportWebVitals from './reportWebVitals';
-import { ToastContainer } from 'react-toastify';
+// import { ToastContainer } from 'react-toastify';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ToastContainer
+<Toaster
   position="top-right"
-  autoClose={5000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-  theme="dark"
-  />
+  reverseOrder={false}
+/>
     <App/>
   </React.StrictMode>
 );

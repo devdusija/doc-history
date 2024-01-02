@@ -9,7 +9,7 @@ import CreateUser from "./pages/CreateUser";
 import Notes from "./pages/NotesIndex";
 import ApproveDocuments from "./pages/ApproveDocument";
 import ViewDocument from "./pages/ViewDocument";
-
+import CreateNew from "./pages/CreateNew";
 const ProtectedRoute = ({ element: Element, ...rest }) => {
   const { currentUser } = useAuth();
 
@@ -68,6 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/approve-document" element={<AdminRoute element={ApproveDocuments} />} />
         <Route path="/view-document/:id" element={<ProtectedRoute element={ViewDocument} />} />
         <Route path="/notes" element={<ProtectedRoute element={Notes} />} />
+        <Route path="/new-notes" element={<ProtectedRoute element={CreateNew} />} />
 
         {/* <Route path="/view-document/:id" element={<ViewDocument/>} /> */}
 

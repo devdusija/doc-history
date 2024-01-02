@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../auth/firebase";
-import { collection, query, where, getDocs, updateDoc, doc, deleteDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, doc, deleteDoc, onSnapshot } from "firebase/firestore";
 import Navbar from "../components/Navbar";
 
 const ApproveDocuments = () => {
@@ -11,10 +11,18 @@ const ApproveDocuments = () => {
       try {
         const documentsRef = collection(db, "Documents");
         const q = query(documentsRef, where("approved_by_admin", "==", false));
-        const querySnapshot = await getDocs(q);
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          const updateddoc = [];
+          querySnapshot.forEach((doc) => {
+            updateddoc.push({ id: doc.id, ...doc.data() }); // Push new notes to the updatedNotes array
+          });
+          console.log(updateddoc)
+          setPendingDocuments(updateddoc);
+        })
+       
   
-        const pendingDocs = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setPendingDocuments(pendingDocs);
+        // const pendingDocs = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        return () => unsubscribe();
       } catch (error) {
         console.error("Error fetching pending documents: ", error);
       }
@@ -41,9 +49,10 @@ const ApproveDocuments = () => {
     }
   };
 
-  const viewDocument = () => {
+  const viewDocument = (url) => {
     // Make a request to the server to fetch the document
-    window.location = "/view-document/12"
+    // window.location = url
+    window.open(url, '_blank');
     // fetch(`${encodeURIComponent(url)}`)
     //   .then((response) => {
     //     // Handle the response to get the document content from the server
@@ -98,7 +107,7 @@ const ApproveDocuments = () => {
                       Reject
                     </button>
                     <button
-                    onClick={() => viewDocument()} 
+                    onClick={() => viewDocument(doc.url)} 
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 rounded focus:outline-none">
                       View
                     </button>

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
-import { ToastContainer, toast } from 'react-toastify';
+import toast, { Toaster } from 'react-hot-toast';
+// import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 const Login = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Login = () => {
   };
 
   const handleLogin = async (e) => {
+    let logintoast
     e.preventDefault();
     setLoading(true); // Show spinner while processing
 
@@ -37,19 +39,12 @@ const Login = () => {
     }
 
     try {
+      logintoast = toast.loading('Logging In...');
       await login(email, password)
       .then(()=>{
-
-        toast.success('Logged in', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          });
+        toast.dismiss(logintoast);
+        console.log("trest")
+        toast.success("Logged IN")
       })
       setLoading(false); // Hide spinner after successful authentication
       sessionStorage.setItem("user", email); // Storing user's email in session storage
@@ -57,24 +52,37 @@ const Login = () => {
     } catch (error) {
       setLoading(false); // Hide spinner if there's an error
       if (error.code === "auth/wrong-password") {
+        toast.dismiss(logintoast);
+
         setNotice("Incorrect password");
+        toast.error("Incorrect Credentials")
+
       } else {
-        toast.error('Error signing in: Incorrect Credentials', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          });
-        // setNotice(`Error signing in: Incorrect Credentials`);
-      }
+      //   toast.error('Error signing in: Incorrect Credentials', {
+      //     position: "top-right",
+      //     autoClose: 5000,
+      //     hideProgressBar: false,
+      //     closeOnClick: true,
+      //     pauseOnHover: true,
+      //     draggable: true,
+      //     progress: undefined,
+      //     theme: "dark",
+      //     });
+      //   // setNotice(`Error signing in: Incorrect Credentials`);
+      // }
+      toast.dismiss(logintoast);
+
+      toast.error("Incorrect Credentials")
+
       console.error('Error signing in:', error);
     }
+  }
   };
-
+  // toast.promise(handleLogin, {
+  //   loading: 'Loading',
+  //   success: 'Got the data',
+  //   error: 'Error when fetching',
+  // });
   const handleLogout = async () => {
     try {
       await logout();
